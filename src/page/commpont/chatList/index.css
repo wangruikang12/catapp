@@ -1,0 +1,4 @@
+.listFriend {
+    display: flex;
+    justify-content: space-between;
+}
