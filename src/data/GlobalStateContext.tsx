@@ -18,6 +18,8 @@ export const GlobalStateProvider = ({ children  }) => {
         visibleImage:false,
         messageBadge:false,
         friendBadge:false,
+        //通话状态
+        callStatus:false,
     });
 
     // 封装 setState 函数，以便可以传递一个更新函数

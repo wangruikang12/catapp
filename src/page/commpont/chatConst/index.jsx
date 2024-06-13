@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavBar, Input, List, ImageViewer } from 'antd-mobile'
+import { NavBar, Input, List, ImageViewer, Space } from 'antd-mobile'
 import { List as VirtualizedList, AutoSizer, CellMeasurer, CellMeasurerCache } from 'react-virtualized' //引入虚拟滚动列表组件优化长列表
 //状态中心数据
 import { useContext } from 'react';
@@ -12,7 +12,11 @@ import socket from '../../../tools/socket';
 
 import ChatContainer from '../chat-container'; //引入聊天组件气泡框
 import { v4 as uuidv4 } from 'uuid';
-import { AddCircleOutline } from 'antd-mobile-icons'
+import { AddCircleOutline, VideoOutline } from 'antd-mobile-icons'
+
+import SimpleVicode from '../SimpleVicode/index'
+import VideoChat from '../VideoChat/VideoChat';
+import ReactDOM from 'react-dom';
 
 
 
@@ -31,6 +35,16 @@ const Index = () => {
     const { state, updateState } = useContext(GlobalStateContext);
     // chatId  state.chatId
 
+    const [showVideoChat, setShowVideoChat] = useState(false);
+
+    const handleVideoChatRequest = () => {
+        setShowVideoChat(true);
+    };
+
+    const handleCloseVideoChat = () => {
+        setShowVideoChat(false);
+    };
+
     useEffect(() => {
         if (listRef.current && data.length > 0) {
             listRef.current.scrollToRow(data.length - 1);
@@ -47,7 +61,6 @@ const Index = () => {
 
         const subscription = liveQuery(() => createUserDatabase(address).chatMessages.where({ chatId: state.chatId }).sortBy('date')).subscribe(
             (newFriendsList) => {
-                console.log(newFriendsList);
                 setData(newFriendsList);
             },
             (error) => {
@@ -300,7 +313,6 @@ const Index = () => {
                         images={[state.image]}
                         visible={state.visibleImage}
                         onClose={() => {
-                            console.log(11111);
                             updateState({ visibleImage: false });
                         }}
                     />
@@ -339,11 +351,21 @@ const Index = () => {
                         style={{ height: '48px' }}
                         onEnterPress={sendChat}
                     />
-                    <div onClick={handleButtonClick} >
-                        <AddCircleOutline fontSize={24} />
-                        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileInput} ref={imageRef} />
-                    </div>
+                    <Space style={{padding: "0 8px"}}>
+                        <div onClick={handleButtonClick} >
+                            <AddCircleOutline fontSize={24} />
+                            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileInput} ref={imageRef} />
+                        </div>
+                        <div onClick={handleVideoChatRequest}>
+                            <VideoOutline fontSize={24} />
+                        </div >
+                    </Space>
+                    {showVideoChat && ReactDOM.createPortal(
+                        <VideoChat onClose={handleCloseVideoChat} />,
+                        document.body
+                    )}
                 </div>
+                {/* <SimpleVicode /> */}
             </div>
         </div>
     );

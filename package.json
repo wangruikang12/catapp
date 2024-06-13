@@ -20,11 +20,13 @@
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.6",
     "react-router-dom": "^6.23.1",
     "react-virtualized": "^9.22.5",
     "socket.io-client": "^4.7.5",
     "uuid": "^10.0.0",
-    "web3": "^4.9.0"
+    "web3": "^4.9.0",
+    "webrtc-adapter": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

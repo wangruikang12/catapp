@@ -23,7 +23,7 @@ const IndexBarExample = () => {
   const { state, updateState } = useContext(GlobalStateContext);
   const [friends, setFriends] = useState([]);
   const address = localStorage.getItem("Address")
-
+ 
 
   useEffect(() => {
     // 构建一个 liveQuery 来订阅朋友列表的变化
@@ -79,7 +79,7 @@ const IndexBarExample = () => {
       </div>
       <IndexBar style={{ width: "100%", height: "100%" }}>
         {/* 索引列表 */}
-        {friends.map((friend) => (
+        {friends.map((friend,index) => (
           friend.status === "accepted" && <IndexBar.Panel
             key={friend.id}
             index=""
@@ -111,7 +111,7 @@ const IndexBarExample = () => {
       >
         {/* 等待同意或者发送完等待中的好友数据 */}
         <List header='等待处理好友' style={{ marginTop: "30px" }}>
-          {friends && friends.map(item => {
+          {friends && friends.map((item) => {
             if (item.status === "pending") {
               return <List.Item key={item.id}> <div>
                 {item.id}
