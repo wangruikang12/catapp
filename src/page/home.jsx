@@ -5,13 +5,10 @@ import { ethers } from 'ethers';
 import socket from '../tools/socket';
 import "./css/home.css"
 
-// import 'react-virtualized/styles.css';
 //本地数据库方法
 import { createUserDatabase } from '../tools/indexDB';
 
 // import { saveChatMessage, updatePersonalInfo, savePersonalInfo, getPersonalInfo, getChatMessages } from '../tools/indexDB'
-//公共方法
-import { mergeArraysByKey } from '../uatis/index'
 
 //状态中心数据
 import { useContext } from 'react';
@@ -19,8 +16,6 @@ import { GlobalStateContext } from '../data/GlobalStateContext';
 
 //引入标签栏 和标签徽章 导航栏 滑动区
 import { Badge, TabBar, NavBar, Swiper, Input, InfiniteScroll, List, Form, Tag, Popover, Space, Toast, Popup, Button, Modal } from 'antd-mobile'
-
-import { liveQuery } from 'dexie';
 //icon 图标
 import {
     AppOutline,
@@ -33,7 +28,6 @@ import {
     EyeOutline
 } from 'antd-mobile-icons'
 
-import { mockRequest } from "../data/mack"
 
 import ChatList from './commpont/chatList'; //引入聊天列表
 import ChantFriend from './commpont/chantFriend'; //引入好友列表
@@ -43,12 +37,9 @@ import ChatConst from './commpont/chatConst'; //引入聊天常组件
 
 const Home = () => {
     const swiperRef = useRef(null) // 获取 SwiperRef
-    //获取外层SwiperRef
-    const swiperRefOut = useRef(null)
+
 
     const [activeIndex, setActiveIndex] = useState(0) // 默认选中的标签索引
-    //外层SwiperRef index
-    const [swiperIndex, setSwiperIndex] = useState(0);
 
     const chatBody = useRef(null) //聊天内容 bady
 
@@ -59,27 +50,6 @@ const Home = () => {
     const [mnemonicPassword, setMnemonicPassword] = useState('')//密码
     //加密保存到地址
     const encryptedWallet = localStorage.getItem("encryptedWallet")
-
-    const [data, setData] = useState([
-        'A',
-        'B',
-        'C',
-        'D',
-        'E',
-        'F',
-        'G',
-        'H',
-        'I',
-        'J',
-        'K',
-        'L',
-        'M',
-        'N',
-        'O',
-        'P',
-        'Q',
-    ]) // 展示的聊天记录数据
-
     const { state, updateState } = useContext(GlobalStateContext);
 
     const [visibleCloseRight, setVisibleCloseRight] = useState(false) //添加好友弹出层关闭
@@ -98,12 +68,6 @@ const Home = () => {
     const navigate = useNavigate();
     //在线ID 
     const [id, setId] = useState([]);
-    const [messages, setMessages] = useState([]);
-    const [sendValue, setSendValue] = useState('');
-    //添加好友的地址
-    const [addres, setAddres] = useState('');
-    //存储好友信息数据
-    const [friends, setFriends] = useState([]);
     //监听 socket Online 
     useEffect(() => {
         socket.on('chat ID', (data) => {
@@ -177,8 +141,6 @@ const Home = () => {
                 }
                 try {
                     updateState({ callStatus: true });
-                    // await userDb.videoChat.put(newInfo);
-                    // console.log('Personal info updated successfully!');
                 } catch (error) {
                     // console.error('Failed to update personal info:', error);
                 }
@@ -189,13 +151,6 @@ const Home = () => {
             navigate("/loning")
         }
         // updateState
-        //本地数据库存储数据同步到State中使用updateState
-        // getPersonalInfo(address, (info) => {
-        //     updateState({ indexDBFriend: info })
-        // });
-        // getChatMessages(address, (info) => {
-        //     updateState({ indexDBchatMessages: info })
-        // })
         // 组件卸载时取消监听
         return () => {
             socket.off('sendMsg');
@@ -203,64 +158,34 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-            setTabs(res => {
-                return res.map(item => {
-                    if (item.key === 'message' ) {
-                        return {
-                            ...item,
-                            badge: state.messageBadge ? Badge.dot : null
-                        }
-                    }else if(item.key === 'todo' ){
-                        return {
-                            ...item,
-                            badge: state.friendBadge ? Badge.dot : null
-                        }
+        setTabs(res => {
+            return res.map(item => {
+                if (item.key === 'message') {
+                    return {
+                        ...item,
+                        badge: state.messageBadge ? Badge.dot : null
                     }
-                     else {
-                        return item
+                } else if (item.key === 'todo') {
+                    return {
+                        ...item,
+                        badge: state.friendBadge ? Badge.dot : null
                     }
-                })
-
+                }
+                else {
+                    return item
+                }
             })
-    }, [state.messageBadge,state.friendBadge])
+
+        })
+    }, [state.messageBadge, state.friendBadge])
     //监听页面刷新
     window.onbeforeunload = function () {
         localStorage.setItem('Online', false);
     }
 
-    //发送私信
-    const sendPrivateMessage = async () => {
-        if (sendValue) {
-            const msg = {
-                // 私信类型
-                type: "private",
-                frome: address,
-                to: "0x1eE43E087aBE06bF491E935ec68E92800D93D375",
-                text: sendValue,
-                time: new Date().getTime()
-            }
-            socket.emit("sendMsg", msg)
-            // saveChatMessage(address, msg)
-            //监听saveChatMessage保存数据成功后获取最新的数据库更新useContext
-            // getChatMessages(address, (info) => {
-            //     updateState({ indexDBchatMessages: info })
-            // })
-        }
-    };
-
 
     //发送添加好友事件
     const addFriend = async () => {
-        // console.log(state);
-        // let states = {
-        //     ...state,
-        //     isAddFriend: "222"
-        // }
-        // updateState(states)
-        // 判断是否是好友
-        // const isFriend = state?.indexDBFriend[0]?.friendArr?.some(item => {
-        //     return item.freindId === item.freindId && item.status === "accepted"
-        // })
 
         // 使用 getAddress 方法验证地址
         const isValidAddress = ethers.isAddress(friendvalue);
@@ -271,14 +196,6 @@ const Home = () => {
             })
             return
         }
-        // if (isValidAddress && isFriend) {
-        //     Toast.show({
-        //         icon: 'success',
-        //         content: '对方已经是你的好友',
-        //     })
-        //     return
-        // }
-        // if (!friendvalue && !isFriend && !isValidAddress) return // 判断是否输入地址和是否是好友 
         Toast.show({
             icon: 'success',
             content: '发送成功等待⌛️对方同意',
@@ -308,33 +225,7 @@ const Home = () => {
             console.error('Failed to update personal info:', error);
         }
 
-
-        //本地数据库保存数据
-        // getPersonalInfo(address, function (data) {
-        //     let AddressData = data.map(item => {
-        //         if (item.id == address) {
-        //             return item
-        //         }
-        //     }
-        //     )
-        //     if (AddressData[0].friendArr) {
-        //         //复杂数组合并 相同数据取新数据
-        //         // updatePersonalInfo(address, { id: address, friendArr: mergeArraysByKey("freindId", AddressData[0].friendArr, [{ ...msg, freindId: msg.to }]) })
-        //         //设置数据原
-        //         setFriends(mergeArraysByKey("freindId", AddressData[0].friendArr, [{ ...msg, freindId: msg.to }]))
-        //     } else {
-        //         // updatePersonalInfo(address, { id: address, friendArr: [{ ...msg, freindId: msg.to }] })
-        //         //设置数据原
-        //         setFriends([{ ...msg, freindId: msg.to }])
-        //     }
-        // })
         setFriendvalue('')
-        // getPersonalInfo(address, (info) => {
-        //     updateState({ indexDBFriend: info })
-        // });
-        //弹窗展示已发送好友请
-        // console.log(state);
-        // updateState(state)
     };
     //底部标签栏展示样式
     const [tabs, setTabs] = useState([
@@ -365,15 +256,7 @@ const Home = () => {
             icon: <UserOutline />,
         },
     ])
-    // const  =
 
-    const [hasMore, setHasMore] = useState(true)
-    async function loadMore() {
-        const append = await mockRequest()
-        setData(val => [...val, ...append])
-        setHasMore(append.length > 0)
-        // setHasMore(true)
-    }
     const actions = [
         { key: 'scan', text: '扫一扫' },
         { key: 'payment', text: '付钱/收钱' },
@@ -407,8 +290,6 @@ const Home = () => {
             </Space>
         </div >
     )
-
-    // console.log(chatBody);
 
 
 
@@ -452,26 +333,12 @@ const Home = () => {
 
     };
 
- 
+
 
 
 
     return (
         <div >
-            {/* <li>商品管理</li> */}
-
-            {/* <Swiper allowTouchMove={false}
-                indicator={() => null}
-                defaultIndex={swiperIndex}
-                ref={swiperRefOut}
-            >
-                <Swiper.Item>
-                
-                </Swiper.Item>
-                <Swiper.Item>
-
-                </Swiper.Item>
-            </Swiper> */}
             <div className='appHome'>
                 <div className="top">
                     <NavBar back={null} right={NavBarRight}>{tabs[activeIndex].title}</NavBar>
@@ -534,10 +401,10 @@ const Home = () => {
                         onChange={key => {
                             const index = tabs.findIndex(item => item.key === key)
                             console.log(key);
-                            if(key === 'message'){
+                            if (key === 'message') {
                                 updateState({ messageBadge: false });
                             }
-                            if(key === 'todo'){
+                            if (key === 'todo') {
                                 updateState({ friendBadge: false });
                             }
                             setActiveIndex(index)
@@ -558,7 +425,6 @@ const Home = () => {
                 position='right'
                 visible={state.visibleCloseRightChat}
                 bodyStyle={{ width: "100%", height: "100%" }}
-            // style={{ width: "100%" , height:"100%"}}
             >
                 <ChatConst />
             </Popup>

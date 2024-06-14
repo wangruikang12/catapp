@@ -14,7 +14,6 @@ import ChatContainer from '../chat-container'; //引入聊天组件气泡框
 import { v4 as uuidv4 } from 'uuid';
 import { AddCircleOutline, VideoOutline } from 'antd-mobile-icons'
 
-import SimpleVicode from '../SimpleVicode/index'
 import VideoChat from '../VideoChat/VideoChat';
 import ReactDOM from 'react-dom';
 
@@ -40,9 +39,6 @@ const Index = () => {
     const handleVideoChatRequest = () => {
         //这里发送消息判断视频请求
         //弹出视频框
-        // sendMsg
-        // callStatus
-        // setShowVideoChat(true);
         const msg = {
             frome: address,
             to: state.chatId,
@@ -57,7 +53,7 @@ const Index = () => {
     };
 
     const handleCloseVideoChat = () => {
-        // setShowVideoChat(false);
+
         updateState({ callStatus: false, callInitiator: false })
     };
 
@@ -65,18 +61,11 @@ const Index = () => {
         if (listRef.current && data.length > 0) {
             listRef.current.scrollToRow(data.length - 1);
         }
-        // console.log(data, "data");
+  
     }, [data]);
-    // useEffect(() => {
-    //     setShowVideoChat(state.callStatus)
-    // }, [state.callStatus]);
 
     useEffect(() => {
-        // 构建一个 liveQuery 来订阅朋友列表的变化
-        // db.messages.where({ chatId }).sortBy('date')).subscribe
-        // createUserDatabase(address).chatMessages.toArray()).subscribe
-        // console.log("state.chatId", state.chatId);
-        console.log(address, "address", state);
+
 
         const subscription = liveQuery(() => createUserDatabase(address).chatMessages.where({ chatId: state.chatId }).sortBy('date')).subscribe(
             (newFriendsList) => {
@@ -201,17 +190,7 @@ const Index = () => {
         } catch (error) {
             console.error('Failed to send message:', error);
         }
-        socket.emit("sendMsg", msg)
-        // 'sent'
-        // console.log(value);
-        // const newData = [...data, {
-        //     type: 'sent',
-        //     content: value,
-        //     time: new Date().toLocaleString()
-        // }];
-        // setData(newData);
-        // setValue('');
-        // socket.emit("sendMsg", msg)           
+        socket.emit("sendMsg", msg)        
 
     }
 
@@ -237,27 +216,7 @@ const Index = () => {
             sendImage(file, msg)
         }
     };
-    //发送私信
-    //   const sendPrivateMessage = async () => {
-    //     if (sendValue) {
-    //         const msg = {
-    //             // 私信类型
-    //             type: "private",
-    //             frome: address,
-    //             to: "0x1eE43E087aBE06bF491E935ec68E92800D93D375",
-    //             text: sendValue,
-    //             time: new Date().getTime()
-    //         }
-    //         // socket.emit("sendMsg", msg)
-    //         // saveChatMessage(address, msg)
-    //         //监听saveChatMessage保存数据成功后获取最新的数据库更新useContext
-    //         // getChatMessages(address, (info) => {
-    //         //     updateState({ indexDBchatMessages: info })
-    //         // })
-    //     }
-    // };
-
-
+   
 
 
     const cache = new CellMeasurerCache({

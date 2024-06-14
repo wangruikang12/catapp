@@ -1,25 +1,19 @@
 // VideoChat.js
 import React, { useState, useEffect, useRef } from 'react';
-// import io from 'socket.io-client';
 import Draggable from 'react-draggable';
 import './VideoChat.css';
 import { Button } from 'antd-mobile';
-// callStatus
-// console.log(state.callStatus,"vode");
-// updateState({callStatus:true})
 import { useContext } from 'react';
 import { GlobalStateContext } from '../../../data/GlobalStateContext';
 import socket from '../../../tools/socket';
 
 const VideoChat = ({ onClose }) => {
-  // const [isConnected, setIsConnected] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const { state, updateState } = useContext(GlobalStateContext);
   const localVideoRef = useRef();
   const remoteVideoRef = useRef();
-  const socketRef = useRef();
   const peerConnectionRef = useRef();
   const localStreamRef = useRef();
   const draggableRef = useRef();
@@ -27,9 +21,6 @@ const VideoChat = ({ onClose }) => {
 
 
   useEffect(() => {
-    // const serverUrl = 'ws://localhost:5000';
-    // socket = socket
-
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then(stream => {
         localVideoRef.current.srcObject = stream;
@@ -126,10 +117,6 @@ const VideoChat = ({ onClose }) => {
       remoteVideoRef.current.srcObject.getTracks().forEach(track => track.stop());
       remoteVideoRef.current.srcObject = null;
     }
-    // setIsConnected(false);
-    //发送离线消息
-
-    // socket.emit('leave');
     const msg = {
       type: 'videoChat',
       frome: address,

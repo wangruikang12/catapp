@@ -9,14 +9,6 @@ import { createUserDatabase } from '../../../tools/indexDB';
 import { liveQuery } from 'dexie';
 
 
-// indexDBFriend
-
-// const friends = [
-//   { name: 'Alice', index: 'A' },
-//   { name: 'Bob', index: 'B' },
-//   { name: 'Charlie', index: 'C' },
-//   // ... 更多好友
-// ];
 
 const IndexBarExample = () => {
   const [visible4, setVisible4] = useState(false)
