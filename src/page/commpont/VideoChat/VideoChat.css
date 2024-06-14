@@ -51,6 +51,7 @@
   width: 100%;
   height: 100%;
   display: flex;
+  padding: 0px;
   video {
     width: 100%;
   }
@@ -63,6 +64,7 @@
   border: 1px solid #000;
   top: 0;
   right: 0;
+  padding: 0px;
   display: flex;
   video {
     width: 100%;

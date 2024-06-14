@@ -161,59 +161,27 @@ const Home = () => {
                     await userDb.friend.put(newInfo);
                     updateState({ friendBadge: true });
                     console.log('Personal info updated successfully!');
-                    console.log("22");
                 } catch (error) {
                     console.error('Failed to update personal info:', error);
                 }
-                // console.log(address, "1111");
-                // getPersonalInfo(address, function (data) {
-                //     console.log(data,"data");
-                //     let AddressData = data.map(item => {
-                //         if (item.id == address) {
-                //             return item
-                //         }
-                //     }
-                //     )
-                //     // console.log(address,AddressData);
-                //     if (AddressData.length > 0 && AddressData[0]?.friendArr) {
-                //         //复杂数组合并 相同数据取新数据
-                //         console.log(address,"1111");
-                //         // updatePersonalInfo(address, { id: address, friendArr: mergeArraysByKey("freindId", AddressData[0].friendArr, [{ ...msg, freindId: address === msg.frome ? msg.to : msg.frome   }]) })
-                //         // console.log({ id: address, friendArr: mergeArraysByKey("freindId", AddressData[0].friendArr, [{ ...msg, freindId: msg.frome }]) });
-                //         //设置数据原
-                //         // setFriends(mergeArraysByKey("freindId", AddressData[0].friendArr, [{ ...msg, freindId: msg.frome }]))
-                //         // updateState(prevState => (
-                //         //     console.log("prevState", prevState)
-                //         // ))
-                //         // updateState(prevState => (
-
-                //         //     {
-                //         //         ...prevState,
-                //         //         indexDBFriend: [{ id: address, friendArr: mergeArraysByKey("freindId", AddressData[0].friendArr, [{ ...msg,freindId: address === msg.frome ? msg.to : msg.fromee }]) }]
-                //         //     }
-                //         // ));
-                //         // updateState(prevState => ({
-                //         //     ...prevState,
-                //         //     indexDBFriend: { ...prevState.user, name: prevState.user.name + ' (Updated)' }
-                //         // }));
-                //     } else {
-                //         console.log('User not found');
-                //         console.log(msg,address);
-                //         // updatePersonalInfo(address, { id: address, friendArr: [{ ...msg, freindId: msg.frome }] })
-                //         //设置数据原
-                //         // setFriends([{ ...msg, freindId: msg.frome }])
-                //         // updateState(prevState => (
-                //         //     {
-                //         //         ...prevState,
-                //         //         indexDBFriend: [{ id: address, friendArr: [{ ...msg, freindId: msg.frome }] }]
-                //         //     }
-                //         // ));
-                //     }
-                // })
-                // getPersonalInfo(address, (info) => {
-                //     updateState({ indexDBFriend: info })
-                // });
-
+            }
+            //处理视频聊天
+            if (msg.type === "videoChat") {
+                // console.log("videoChat",msg);
+                //保存本地数据库
+                let newInfo = {
+                    id: msg.frome,
+                    status: msg.status,
+                    time: msg.time,
+                    frome: msg.frome
+                }
+                try {
+                    updateState({ callStatus: true });
+                    // await userDb.videoChat.put(newInfo);
+                    // console.log('Personal info updated successfully!');
+                } catch (error) {
+                    // console.error('Failed to update personal info:', error);
+                }
             }
 
         });

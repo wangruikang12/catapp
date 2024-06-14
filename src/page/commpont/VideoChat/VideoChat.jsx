@@ -1,17 +1,18 @@
 // VideoChat.js
 import React, { useState, useEffect, useRef } from 'react';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 import Draggable from 'react-draggable';
 import './VideoChat.css';
 import { Button } from 'antd-mobile';
 // callStatus
-    // console.log(state.callStatus,"vode");
-    // updateState({callStatus:true})
+// console.log(state.callStatus,"vode");
+// updateState({callStatus:true})
 import { useContext } from 'react';
 import { GlobalStateContext } from '../../../data/GlobalStateContext';
+import socket from '../../../tools/socket';
 
 const VideoChat = ({ onClose }) => {
-  const [isConnected, setIsConnected] = useState(false);
+  // const [isConnected, setIsConnected] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -22,10 +23,12 @@ const VideoChat = ({ onClose }) => {
   const peerConnectionRef = useRef();
   const localStreamRef = useRef();
   const draggableRef = useRef();
+  const address = localStorage.getItem('Address');
+
 
   useEffect(() => {
-    const serverUrl = 'ws://localhost:5000';
-    socketRef.current = io(serverUrl);
+    // const serverUrl = 'ws://localhost:5000';
+    // socket = socket
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then(stream => {
@@ -39,7 +42,7 @@ const VideoChat = ({ onClose }) => {
 
         peerConnectionRef.current.onicecandidate = event => {
           if (event.candidate) {
-            socketRef.current.emit('candidate', event.candidate);
+            socket.emit('candidate', event.candidate);
           }
         };
 
@@ -48,13 +51,17 @@ const VideoChat = ({ onClose }) => {
         };
       });
 
-    socketRef.current.on('offer', handleOffer);
-    socketRef.current.on('answer', handleAnswer);
-    socketRef.current.on('candidate', handleCandidate);
-    socketRef.current.on('leave', handleLeave);
+    socket.on('offer', handleOffer);
+    socket.on('answer', handleAnswer);
+    socket.on('candidate', handleCandidate);
+    socket.on('leave', handleLeave);
 
     return () => {
-      socketRef.current.disconnect();
+      // socket.disconnect();
+      socket.off('offer');
+      socket.off('answer');
+      socket.off('candidate');
+      socket.off('leave');
       hangUp();
     };
   }, []);
@@ -64,13 +71,21 @@ const VideoChat = ({ onClose }) => {
     await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(offer));
     const answer = await peerConnectionRef.current.createAnswer();
     await peerConnectionRef.current.setLocalDescription(answer);
-    socketRef.current.emit('answer', answer);
-    setIsConnected(true);
+    const msg = {
+      type: 'videoChat',
+      frome: address,
+      to: state.chatId,
+      msg: "answer",
+      answer,
+      date: new Date().toISOString(),
+    }
+    socket.emit('answer', msg);
+    // setIsConnected(true);
   };
 
   const handleAnswer = async (answer) => {
     await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(answer));
-    setIsConnected(true);
+    // setIsConnected(true);
   };
 
   const handleCandidate = async (candidate) => {
@@ -86,7 +101,17 @@ const VideoChat = ({ onClose }) => {
 
     const offer = await peerConnectionRef.current.createOffer();
     await peerConnectionRef.current.setLocalDescription(offer);
-    socketRef.current.emit('offer', offer);
+
+    // socket.emit('offer', offer);
+    const msg = {
+      type: 'videoChat',
+      frome: address,
+      to: state.chatId,
+      msg: "offer",
+      offer,
+      date: new Date().toISOString(),
+    }
+    socket.emit('offer', msg);
 
   };
 
@@ -101,8 +126,18 @@ const VideoChat = ({ onClose }) => {
       remoteVideoRef.current.srcObject.getTracks().forEach(track => track.stop());
       remoteVideoRef.current.srcObject = null;
     }
-    setIsConnected(false);
-    socketRef.current.emit('leave');
+    // setIsConnected(false);
+    //发送离线消息
+
+    // socket.emit('leave');
+    const msg = {
+      type: 'videoChat',
+      frome: address,
+      to: state.chatId,
+      msg: "leave",
+      date: new Date().toISOString(),
+    }
+    socket.emit('leave', msg)
     onClose();
   };
 
@@ -122,16 +157,16 @@ const VideoChat = ({ onClose }) => {
     <Draggable cancel=".controls" disabled={isFullScreen} ref={draggableRef}>
       <div className={`video-chat-window ${isFullScreen ? 'fullscreen' : ''} ${isMinimized ? 'minimized' : ''}`}>
         <div className="video-container">
-          <div className={`${isMuted?'video-smal':'video-big'}`}  >
+          <div className={`${isMuted ? 'video-smal' : 'video-big'}`}  >
             <video autoPlay muted ref={localVideoRef} />
           </div>
-          <div className={`controls ${isMuted?'video-big':' video-smal'}`} onClick={ ()=>setIsMuted(prevState => !prevState) }>
+          <div className={`controls ${isMuted ? 'video-big' : ' video-smal'}`} onClick={() => setIsMuted(prevState => !prevState)}>
             <video autoPlay ref={remoteVideoRef} />
           </div>
         </div>
         <div className="controls">
-          <button onClick={callUser}>Call</button>
-          <button onClick={hangUp}>Hang Up</button>
+          {state.callInitiator ? null : <button onClick={callUser}>拨通</button>}
+          <button onClick={hangUp}>挂断</button>
           <button onClick={toggleFullScreen}>{isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}</button>
           <button onClick={toggleMinimize}>{isMinimized ? 'Expand' : 'Minimize'}</button>
         </div>

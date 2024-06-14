@@ -38,11 +38,27 @@ const Index = () => {
     const [showVideoChat, setShowVideoChat] = useState(false);
 
     const handleVideoChatRequest = () => {
-        setShowVideoChat(true);
+        //这里发送消息判断视频请求
+        //弹出视频框
+        // sendMsg
+        // callStatus
+        // setShowVideoChat(true);
+        const msg = {
+            frome: address,
+            to: state.chatId,
+            type: "videoChat",
+            msg: "call",
+            callId: uuidv4(),
+            date: new Date().toISOString(),
+        }
+        socket.emit("sendMsg", msg)
+        updateState({ callStatus: true, callInitiator: true })
+
     };
 
     const handleCloseVideoChat = () => {
-        setShowVideoChat(false);
+        // setShowVideoChat(false);
+        updateState({ callStatus: false, callInitiator: false })
     };
 
     useEffect(() => {
@@ -51,6 +67,9 @@ const Index = () => {
         }
         // console.log(data, "data");
     }, [data]);
+    // useEffect(() => {
+    //     setShowVideoChat(state.callStatus)
+    // }, [state.callStatus]);
 
     useEffect(() => {
         // 构建一个 liveQuery 来订阅朋友列表的变化
@@ -351,7 +370,7 @@ const Index = () => {
                         style={{ height: '48px' }}
                         onEnterPress={sendChat}
                     />
-                    <Space style={{padding: "0 8px"}}>
+                    <Space style={{ padding: "0 8px" }}>
                         <div onClick={handleButtonClick} >
                             <AddCircleOutline fontSize={24} />
                             <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileInput} ref={imageRef} />
@@ -360,7 +379,7 @@ const Index = () => {
                             <VideoOutline fontSize={24} />
                         </div >
                     </Space>
-                    {showVideoChat && ReactDOM.createPortal(
+                    {state.callStatus && ReactDOM.createPortal(
                         <VideoChat onClose={handleCloseVideoChat} />,
                         document.body
                     )}
