@@ -1,0 +1,74 @@
+.id-card {
+    height: 100px;
+    overflow: scroll;
+}
+
+.appHome {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.bottom {
+    flex: 0;
+    border-top: solid 1px var(--adm-color-border);
+}
+
+.top {
+    flex: 0;
+    border-bottom: solid 1px var(--adm-color-border);
+}
+
+.body {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {
+    height: 120px;
+    color: #999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* font-size: 24px; */
+    user-select: none;
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    /* 显示可以点击的光标 */
+    max-width: 100vw;
+    /* 根据你的需要设置适当的宽度 */
+}
+
+.ellipsisF {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.password {
+    display: flex;
+    align-items: center;
+    margin: 50px 10px 10px 10px;
+    .input {
+        flex: auto;
+    }
+
+    .eye {
+        flex: none;
+        margin-left: 8px;
+        padding: 4px;
+        cursor: pointer;
+
+        svg {
+            display: block;
+            font-size: var(--adm-font-size-7);
+        }
+    }
+}

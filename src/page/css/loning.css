@@ -1,0 +1,12 @@
+.loningdiv{
+    padding: 10px 20px 10px 0px;
+    max-width: 500px;
+    max-height: 300px;
+}
+.loning{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

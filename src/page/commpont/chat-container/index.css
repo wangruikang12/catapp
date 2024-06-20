@@ -1,0 +1,59 @@
+
+  /* 对话框容器样式 */
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    /* max-width: 80%; */
+    margin-bottom: 10px;
+    margin: 0 10px;
+  }
+  
+  /* 发送者气泡样式 */
+  .sent {
+    align-self: flex-end;
+    background-color: #daf8cb; /* 浅绿色背景 */
+    border-radius: 20px 20px 0 20px; /* 右上角没有圆角 */
+    padding: 10px 15px;
+    margin-right: 15px; /* 与容器右边距离 */
+  }
+  
+  /* 接收者气泡样式 */
+  .received {
+    align-self: flex-start;
+    background-color: #ffffff; /* 白色背景 */
+    border-radius: 20px 20px 20px 0; /* 左上角没有圆角 */
+    padding: 10px 15px;
+    margin-left: 15px; /* 与容器左边距离 */
+  }
+  
+  /* 文本样式 */
+  .message-text {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  /* 发送者和接收者的名称样式 */
+  .sender-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  /* 时间戳样式 */
+  .timestamp {
+    font-size: 12px;
+    text-align: right;
+    margin-top: 5px;
+    color: #999999;
+  }
+  
+  .adm-mask {
+    --z-index: var(--adm-mask-z-index,1000);
+    
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: var(--z-index);
+    display: block;
+    width: 100%;
+    height: 100%
+}
